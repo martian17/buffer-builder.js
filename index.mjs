@@ -16,9 +16,12 @@ export class BufferBuilder{
         if(this.length < this.size){
             return;
         }
-        this.size *= 2;
+        while(this.length > this.size){
+            this.size *= 2;
+        }
         const newbuf = new ArrayBuffer(this.size);
-        newbuf.set(this.buffer);
+        const u8n = new Uint8Array(newbuf);
+        u8n.set(this.u8);
         this.buffer = newbuf;
         this.refreshViews();
     }
@@ -27,14 +30,14 @@ export class BufferBuilder{
         this.alloc();
     }
     growIfNoSpace(offset,insertLength){
-        const newalloc = offset + insertLength - this.size;
+        const newalloc = offset + insertLength - this.length;
         if(newalloc > 0){
             this.grow(newalloc);
         }
     }
     set(buff,offset = 0){
         this.growIfNoSpace(offset,buff.byteLength);
-        this.buffer.set(buff,offset);
+        this.u8.set(new Uint8Array(buff),offset);
     }
     append_buffer(buff){
         this.set(buff,this.length);
@@ -86,7 +89,7 @@ for(let [typename,typearr] of [
     BufferBuilder.prototype["append_"+typename] = function(val){
         typearr[0] = val;
         this.grow(typesize);
-        this.buffer.set(typearr.buffer,this.length-typesize);
+        this.u8.set(new Uint8Array(typearr.buffer),this.length-typesize);
     }
     BufferBuilder.prototype["set_"+typename] = function(val,offset){
         typearr[0] = val;
