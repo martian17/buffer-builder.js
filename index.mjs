@@ -1,16 +1,32 @@
+//util functions. will refactor into util npm module in the future
+const isNode = typeof window === undefined;
+const BufferConstructor = isNode?Buffer:Uint8Array;
+
+const U8FromView = function(view){
+    if(view instanceof Uint8Array){
+        return view;
+    }
+    return new Uint8Array(view.buffer,view.byteOffset,view.byteLength);
+};
+
+const allocUnsafe = isNode?function(n){
+    return new Uint8Array(Buffer.allocUnsafe(n).buffer,0,n);
+}:function(n){
+    return new Uint8Array(new ArrayBuffer(n));
+};
+
+
 export class BufferBuilder{
     length = 0;
     size = 512;
-    buffer;
     u8;
     constructor(size,length=0){
         size = this.size = size || this.size;
-        const buffer = this.buffer = new ArrayBuffer(size);
+        this.u8 = allocUnsafe(size);
         this.length = length;
-        this.refreshViews();
-    }
-    refreshViews(){
-        this.u8 = new Uint8Array(this.buffer);
+        if(length !== 0){
+            this.u8.fill(0,0,length);
+        }
     }
     alloc(){
         if(this.length < this.size){
@@ -19,11 +35,9 @@ export class BufferBuilder{
         while(this.length > this.size){
             this.size *= 2;
         }
-        const newbuf = new ArrayBuffer(this.size);
-        const u8n = new Uint8Array(newbuf);
+        const u8n = allocUnsafe(this.size);
         u8n.set(this.u8);
-        this.buffer = newbuf;
-        this.refreshViews();
+        this.u8 = u8n;
     }
     grow(n){
         this.length += n;
@@ -35,15 +49,60 @@ export class BufferBuilder{
             this.grow(newalloc);
         }
     }
-    set(buff,offset = 0){
-        this.growIfNoSpace(offset,buff.byteLength);
-        this.u8.set(new Uint8Array(buff),offset);
+    // interface view
+    // {buffer,byteLength:int,byteOffser:int}
+    set_buffer(view,offset = 0){
+        const u8 = U8FromView(view);
+        this.growIfNoSpace(offset,u8.length);
+        this.u8.set(u8,offset);
     }
+    set_BE16_buffer(view,offset = 0){
+        const u8 = U8FromView(view);
+        this.growIfNoSpace(offset,u8.length);
+        for(let i = 0; i+1 < u8.length; i+=2){
+            this.u8[i] = u8[i+1];
+            this.u8[i+1] = u8[i];
+        }
+    }
+    set_BE32_buffer(view,offset = 0){
+        const u8 = U8FromView(view);
+        this.growIfNoSpace(offset,u8.length);
+        for(let i = 0; i+3 < u8.length; i+=4){
+            this.u8[i]   = u8[i+3];
+            this.u8[i+1] = u8[i+2];
+            this.u8[i+2] = u8[i+1];
+            this.u8[i+3] = u8[i];
+        }
+    }
+    set_BE64_buffer(view,offset = 0){
+        const u8 = U8FromView(view);
+        this.growIfNoSpace(offset,u8.length);
+        for(let i = 0; i+7 < u8.length; i+=8){
+            this.u8[i]   = u8[i+7];
+            this.u8[i+1] = u8[i+6];
+            this.u8[i+2] = u8[i+5];
+            this.u8[i+3] = u8[i+4];
+            this.u8[i+4] = u8[i+3];
+            this.u8[i+5] = u8[i+2];
+            this.u8[i+6] = u8[i+1];
+            this.u8[i+7] = u8[i];
+        }
+    }
+
     append_buffer(buff){
-        this.set(buff,this.length);
+        this.set_buffer(buff,this.length);
+    }
+    append_BE16_buffer(buff){
+        this.set_BE16_buffer(buff,this.length);
+    }
+    append_BE16_buffer(buff){
+        this.set_BE16_buffer(buff,this.length);
+    }
+    append_BE16_buffer(buff){
+        this.set_BE16_buffer(buff,this.length);
     }
     export(){
-        return this.buffer.slice(0,this.length);
+        return new BufferConstructor(this.u8,0,this.length);
     }
 };
 
@@ -53,7 +112,12 @@ BE_writers[2] = function(u81,u82,offset){
     u81[offset+1] = u82[0];
 }
 
+//let ffff = true;
 BE_writers[4] = function(u81,u82,offset){
+    //if(ffff && u82[0] !== 0){
+    //    ffff = false;
+    //    console.log("ffffb",u82);
+    //}
     u81[offset] = u82[3];
     u81[offset+1] = u82[2];
     u81[offset+2] = u82[1];
@@ -70,7 +134,6 @@ BE_writers[8] = function(u81,u82,offset){
     u81[offset+6] = u82[1];
     u81[offset+7] = u82[0];
 }
-
 
 
 for(let [typename,typearr] of [
