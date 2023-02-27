@@ -1,6 +1,10 @@
 //util functions. will refactor into util npm module in the future
-const isNode = typeof window === undefined;
-const BufferConstructor = isNode?Buffer:Uint8Array;
+const isNode = typeof window === "undefined";
+const BufferFrom = isNode?(...args)=>{
+    return Buffer.from(...args);
+}:(...args)=>{
+    return new Uint8Array(...args);
+};
 
 const U8FromView = function(view){
     if(view instanceof Uint8Array){
@@ -60,32 +64,32 @@ export class BufferBuilder{
         const u8 = U8FromView(view);
         this.growIfNoSpace(offset,u8.length);
         for(let i = 0; i+1 < u8.length; i+=2){
-            this.u8[i] = u8[i+1];
-            this.u8[i+1] = u8[i];
+            this.u8[offset+i] = u8[i+1];
+            this.u8[offset+i+1] = u8[i];
         }
     }
     set_BE32_buffer(view,offset = 0){
         const u8 = U8FromView(view);
         this.growIfNoSpace(offset,u8.length);
         for(let i = 0; i+3 < u8.length; i+=4){
-            this.u8[i]   = u8[i+3];
-            this.u8[i+1] = u8[i+2];
-            this.u8[i+2] = u8[i+1];
-            this.u8[i+3] = u8[i];
+            this.u8[offset+i]   = u8[i+3];
+            this.u8[offset+i+1] = u8[i+2];
+            this.u8[offset+i+2] = u8[i+1];
+            this.u8[offset+i+3] = u8[i];
         }
     }
     set_BE64_buffer(view,offset = 0){
         const u8 = U8FromView(view);
         this.growIfNoSpace(offset,u8.length);
         for(let i = 0; i+7 < u8.length; i+=8){
-            this.u8[i]   = u8[i+7];
-            this.u8[i+1] = u8[i+6];
-            this.u8[i+2] = u8[i+5];
-            this.u8[i+3] = u8[i+4];
-            this.u8[i+4] = u8[i+3];
-            this.u8[i+5] = u8[i+2];
-            this.u8[i+6] = u8[i+1];
-            this.u8[i+7] = u8[i];
+            this.u8[offset+i]   = u8[i+7];
+            this.u8[offset+i+1] = u8[i+6];
+            this.u8[offset+i+2] = u8[i+5];
+            this.u8[offset+i+3] = u8[i+4];
+            this.u8[offset+i+4] = u8[i+3];
+            this.u8[offset+i+5] = u8[i+2];
+            this.u8[offset+i+6] = u8[i+1];
+            this.u8[offset+i+7] = u8[i];
         }
     }
 
@@ -95,14 +99,16 @@ export class BufferBuilder{
     append_BE16_buffer(buff){
         this.set_BE16_buffer(buff,this.length);
     }
-    append_BE16_buffer(buff){
-        this.set_BE16_buffer(buff,this.length);
+    append_BE32_buffer(buff){
+        this.set_BE32_buffer(buff,this.length);
     }
-    append_BE16_buffer(buff){
-        this.set_BE16_buffer(buff,this.length);
+    append_BE64_buffer(buff){
+        this.set_BE64_buffer(buff,this.length);
     }
     export(){
-        return new BufferConstructor(this.u8,0,this.length);
+        console.log("exported length:",this.length);
+        console.log("background buffer length:",this.size,this.u8.length);
+        return BufferFrom(this.u8.buffer,0,this.length);
     }
 };
 
@@ -112,12 +118,7 @@ BE_writers[2] = function(u81,u82,offset){
     u81[offset+1] = u82[0];
 }
 
-//let ffff = true;
 BE_writers[4] = function(u81,u82,offset){
-    //if(ffff && u82[0] !== 0){
-    //    ffff = false;
-    //    console.log("ffffb",u82);
-    //}
     u81[offset] = u82[3];
     u81[offset+1] = u82[2];
     u81[offset+2] = u82[1];
