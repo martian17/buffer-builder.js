@@ -22,10 +22,8 @@ const allocUnsafe = isNode?function(n){
 
 export class BufferBuilder{
     length = 0;
-    size = 512;
     u8;
-    constructor(size,length=0){
-        size = this.size = size || this.size;
+    constructor(size=512,length=0){
         this.u8 = allocUnsafe(size);
         this.length = length;
         if(length !== 0){
@@ -33,13 +31,10 @@ export class BufferBuilder{
         }
     }
     alloc(){
-        if(this.length < this.size){
+        if(this.length < this.u8.length){
             return;
         }
-        while(this.length > this.size){
-            this.size *= 2;
-        }
-        const u8n = allocUnsafe(this.size);
+        const u8n = allocUnsafe(this.u8.length*2);
         u8n.set(this.u8);
         this.u8 = u8n;
     }
@@ -107,7 +102,7 @@ export class BufferBuilder{
     }
     export(){
         console.log("exported length:",this.length);
-        console.log("background buffer length:",this.size,this.u8.length);
+        console.log("background buffer length:",this.u8.length);
         return BufferFrom(this.u8.buffer,0,this.length);
     }
 };
