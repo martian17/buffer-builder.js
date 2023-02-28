@@ -19,6 +19,8 @@ const allocUnsafe = isNode?function(n){
     return new Uint8Array(new ArrayBuffer(n));
 };
 
+const VERBOSE = false;
+
 
 export class BufferBuilder{
     length = 0;
@@ -101,8 +103,8 @@ export class BufferBuilder{
         this.set_BE64_buffer(buff,this.length);
     }
     export(){
-        console.log("exported length:",this.length);
-        console.log("background buffer length:",this.u8.length);
+        if(VERBOSE)console.log("exported length:",this.length);
+        if(VERBOSE)console.log("background buffer length:",this.u8.length);
         return BufferFrom(this.u8.buffer,0,this.length);
     }
 };
