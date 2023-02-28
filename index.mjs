@@ -36,7 +36,11 @@ export class BufferBuilder{
         if(this.length < this.u8.length){
             return;
         }
-        const u8n = allocUnsafe(this.u8.length*2);
+        let len = this.u8.length;
+        while(len < this.length){
+            len *= 2;
+        }
+        const u8n = allocUnsafe(len);
         u8n.set(this.u8);
         this.u8 = u8n;
     }
@@ -155,14 +159,14 @@ for(let [typename,typearr] of [
     BufferBuilder.prototype["set_"+typename] = function(val,offset){
         typearr[0] = val;
         this.growIfNoSpace(offset,typesize);
-        this.set(typearr.buffer,offset);
+        this.set_buffer(typearr,offset);
     }
     if(typesize === 1)continue;
     BufferBuilder.prototype["set_"+typename+"_aligned"] = function(val,offset){
         typearr[0] = val;
         offset *= typesize;
         this.growIfNoSpace(offset,typesize);
-        this.set(typearr.buffer,offset);
+        this.set_buffer(typearr,offset);
     }
 
     const BE_writer = BE_writers[typesize];
