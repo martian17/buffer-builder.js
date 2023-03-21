@@ -1,19 +1,18 @@
 {
-  "name": "nbt.js",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.mjs",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "compilerOptions": {
+    "target": "esnext",
+    "lib": ["esnext", "DOM"],
+    "module": "esnext",
+    "moduleResolution":"nodenext",
+    "strict": true,
+    "skipLibCheck": true,
+    "outDir": "lib",
+    "rootDir": "src",
+    "declaration": true,
+    "declarationMap": true,
+    "forceConsistentCasingInFileNames": true
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "buffer-builder.js": "github:martian17/buffer-builder.js"
-  },
-  "devDependencies": {
-    "ds-js": "github:martian17/ds-js",
-    "typescript": "^5.0.2"
-  }
+  "include": [
+    "src/"
+  ]
 }
