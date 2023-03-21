@@ -114,6 +114,73 @@ export class BufferBuilder{
             return this.u8.subarray(0,this.length);
         }
     }
+
+    //methods that are auto generated
+    //type names are aligned to make the editing tasier
+
+    append_U8:            (val: number)                 => void;
+       set_U8:            (val: number)                 => void;
+
+    append_U16:           (val: number)                 => void;
+       set_U16:           (val: number, offset: number) => void;
+       set_U16_aligned:   (val: number, offset: number) => void;
+    append_U16BE:         (val: number)                 => void;
+       set_U16BE:         (val: number, offset: number) => void;
+       set_U16BE_aligned: (val: number, offset: number) => void;
+
+    append_U32:           (val: number)                 => void;
+       set_U32:           (val: number, offset: number) => void;
+       set_U32_aligned:   (val: number, offset: number) => void;
+    append_U32BE:         (val: number)                 => void;
+       set_U32BE:         (val: number, offset: number) => void;
+       set_U32BE_aligned: (val: number, offset: number) => void;
+
+    append_U64:           (val: bigint)                 => void;
+       set_U64:           (val: bigint, offset: number) => void;
+       set_U64_aligned:   (val: bigint, offset: number) => void;
+    append_U64BE:         (val: bigint)                 => void;
+       set_U64BE:         (val: bigint, offset: number) => void;
+       set_U64BE_aligned: (val: bigint, offset: number) => void;
+
+
+    append_I8:            (val: number)                 => void;
+       set_I8:            (val: number)                 => void;
+
+    append_I16:           (val: number)                 => void;
+       set_I16:           (val: number, offset: number) => void;
+       set_I16_aligned:   (val: number, offset: number) => void;
+    append_I16BE:         (val: number)                 => void;
+       set_I16BE:         (val: number, offset: number) => void;
+       set_I16BE_aligned: (val: number, offset: number) => void;
+
+    append_I32:           (val: number)                 => void;
+       set_I32:           (val: number, offset: number) => void;
+       set_I32_aligned:   (val: number, offset: number) => void;
+    append_I32BE:         (val: number)                 => void;
+       set_I32BE:         (val: number, offset: number) => void;
+       set_I32BE_aligned: (val: number, offset: number) => void;
+
+    append_I64:           (val: bigint)                 => void;
+       set_I64:           (val: bigint, offset: number) => void;
+       set_I64_aligned:   (val: bigint, offset: number) => void;
+    append_I64BE:         (val: bigint)                 => void;
+       set_I64BE:         (val: bigint, offset: number) => void;
+       set_I64BE_aligned: (val: bigint, offset: number) => void;
+
+
+    append_F32:           (val: number)                 => void;
+       set_F32:           (val: number, offset: number) => void;
+       set_F32_aligned:   (val: number, offset: number) => void;
+    append_F32BE:         (val: number)                 => void;
+       set_F32BE:         (val: number, offset: number) => void;
+       set_F32BE_aligned: (val: number, offset: number) => void;
+
+    append_F64:           (val: number)                 => void;
+       set_F64:           (val: number, offset: number) => void;
+       set_F64_aligned:   (val: number, offset: number) => void;
+    append_F64BE:         (val: number)                 => void;
+       set_F64BE:         (val: number, offset: number) => void;
+       set_F64BE_aligned: (val: number, offset: number) => void;
 };
 
 const BE_writers = [];
