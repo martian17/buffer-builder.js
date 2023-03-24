@@ -1,4 +1,4 @@
-//util functions. will refactor into util npm module in the future
+//util functions
 const isNode = typeof window === "undefined";
 
 const U8FromView = function(view: ArrayBufferView): Uint8Array{
@@ -14,7 +14,50 @@ const allocUnsafe: (n: number) => Uint8Array = isNode?function(n){
     return new Uint8Array(new ArrayBuffer(n));
 };
 
+
+const BE_writer_2 = function(u81: Uint8Array, u82: Uint8Array, offset: number){
+    u81[offset] = u82[1];
+    u81[offset+1] = u82[0];
+};
+
+const BE_writer_4 = function(u81: Uint8Array, u82: Uint8Array, offset: number){
+    u81[offset] = u82[3];
+    u81[offset+1] = u82[2];
+    u81[offset+2] = u82[1];
+    u81[offset+3] = u82[0];
+};
+
+const BE_writer_8 = function(u81: Uint8Array, u82: Uint8Array, offset: number){
+    u81[offset] = u82[7];
+    u81[offset+1] = u82[6];
+    u81[offset+2] = u82[5];
+    u81[offset+3] = u82[4];
+    u81[offset+4] = u82[3];
+    u81[offset+5] = u82[2];
+    u81[offset+6] = u82[1];
+    u81[offset+7] = u82[0];
+};
+
+// constants
 const VERBOSE = false;
+// auto generated constants. Souce at src/index.pts
+const view_U16 = new Uint16Array(1);
+const view_U16_u8 = new Uint8Array(view_U16);
+const view_U32 = new Uint32Array(1);
+const view_U32_u8 = new Uint8Array(view_U32);
+const view_U64 = new BigUint64Array(1);
+const view_U64_u8 = new Uint8Array(view_U64);
+const view_I16 = new Int16Array(1);
+const view_I16_u8 = new Uint8Array(view_I16);
+const view_I32 = new Int32Array(1);
+const view_I32_u8 = new Uint8Array(view_I32);
+const view_I64 = new BigInt64Array(1);
+const view_I64_u8 = new Uint8Array(view_I64);
+const view_F32 = new Float32Array(1);
+const view_F32_u8 = new Uint8Array(view_F32);
+const view_F64 = new Float64Array(1);
+const view_F64_u8 = new Uint8Array(view_F64);
+
 
 
 export class BufferBuilder{
@@ -115,148 +158,290 @@ export class BufferBuilder{
         }
     }
 
-    //methods that are auto generated
-    //type names are aligned to make the editing tasier
+    // these append/set methods are auto generated using build script at src/index.pts
+    // append little endian methods
+    append_U8(val: number){
+        this.grow(1);
+        this.u8[this.length-1] = val;
+    }
+    append_U16(val: number){
+        view_U16[0] = val;
+        this.grow(2);
+        this.u8.set(view_U16_u8,this.length-2);
+    }
+    append_U32(val: number){
+        view_U32[0] = val;
+        this.grow(4);
+        this.u8.set(view_U32_u8,this.length-4);
+    }
+    append_U64(val: bigint){
+        view_U64[0] = val;
+        this.grow(8);
+        this.u8.set(view_U64_u8,this.length-8);
+    }
+    append_I8(val: number){
+        this.grow(1);
+        this.u8[this.length-1] = val;
+    }
+    append_I16(val: number){
+        view_I16[0] = val;
+        this.grow(2);
+        this.u8.set(view_I16_u8,this.length-2);
+    }
+    append_I32(val: number){
+        view_I32[0] = val;
+        this.grow(4);
+        this.u8.set(view_I32_u8,this.length-4);
+    }
+    append_I64(val: bigint){
+        view_I64[0] = val;
+        this.grow(8);
+        this.u8.set(view_I64_u8,this.length-8);
+    }
+    append_F32(val: number){
+        view_F32[0] = val;
+        this.grow(4);
+        this.u8.set(view_F32_u8,this.length-4);
+    }
+    append_F64(val: number){
+        view_F64[0] = val;
+        this.grow(8);
+        this.u8.set(view_F64_u8,this.length-8);
+    }
+    
+    // set little endian methods
+    set_U8(val: number, offset: number){
+        this.growIfNoSpace(offset, 1);
+        this.u8[offset] = val;
+    }
+    set_U16(val: number, offset: number){
+        view_U16[0] = val;
+        this.growIfNoSpace(offset, 2);
+        this.set_buffer(view_U16_u8,offset);
+    }
+    set_U32(val: number, offset: number){
+        view_U32[0] = val;
+        this.growIfNoSpace(offset, 4);
+        this.set_buffer(view_U32_u8,offset);
+    }
+    set_U64(val: bigint, offset: number){
+        view_U64[0] = val;
+        this.growIfNoSpace(offset, 8);
+        this.set_buffer(view_U64_u8,offset);
+    }
+    set_I8(val: number, offset: number){
+        this.growIfNoSpace(offset, 1);
+        this.u8[offset] = val;
+    }
+    set_I16(val: number, offset: number){
+        view_I16[0] = val;
+        this.growIfNoSpace(offset, 2);
+        this.set_buffer(view_I16_u8,offset);
+    }
+    set_I32(val: number, offset: number){
+        view_I32[0] = val;
+        this.growIfNoSpace(offset, 4);
+        this.set_buffer(view_I32_u8,offset);
+    }
+    set_I64(val: bigint, offset: number){
+        view_I64[0] = val;
+        this.growIfNoSpace(offset, 8);
+        this.set_buffer(view_I64_u8,offset);
+    }
+    set_F32(val: number, offset: number){
+        view_F32[0] = val;
+        this.growIfNoSpace(offset, 4);
+        this.set_buffer(view_F32_u8,offset);
+    }
+    set_F64(val: number, offset: number){
+        view_F64[0] = val;
+        this.growIfNoSpace(offset, 8);
+        this.set_buffer(view_F64_u8,offset);
+    }
+    
+    // set aligned little endian methods
+    set_U16_aligned(val: number, offset: number){
+        view_U16[0] = val;
+        offset *= 2;
+        this.growIfNoSpace(offset, 2);
+        this.set_buffer(view_U16_u8,offset);
+    }
+    set_U32_aligned(val: number, offset: number){
+        view_U32[0] = val;
+        offset *= 4;
+        this.growIfNoSpace(offset, 4);
+        this.set_buffer(view_U32_u8,offset);
+    }
+    set_U64_aligned(val: bigint, offset: number){
+        view_U64[0] = val;
+        offset *= 8;
+        this.growIfNoSpace(offset, 8);
+        this.set_buffer(view_U64_u8,offset);
+    }
+    set_I16_aligned(val: number, offset: number){
+        view_I16[0] = val;
+        offset *= 2;
+        this.growIfNoSpace(offset, 2);
+        this.set_buffer(view_I16_u8,offset);
+    }
+    set_I32_aligned(val: number, offset: number){
+        view_I32[0] = val;
+        offset *= 4;
+        this.growIfNoSpace(offset, 4);
+        this.set_buffer(view_I32_u8,offset);
+    }
+    set_I64_aligned(val: bigint, offset: number){
+        view_I64[0] = val;
+        offset *= 8;
+        this.growIfNoSpace(offset, 8);
+        this.set_buffer(view_I64_u8,offset);
+    }
+    set_F32_aligned(val: number, offset: number){
+        view_F32[0] = val;
+        offset *= 4;
+        this.growIfNoSpace(offset, 4);
+        this.set_buffer(view_F32_u8,offset);
+    }
+    set_F64_aligned(val: number, offset: number){
+        view_F64[0] = val;
+        offset *= 8;
+        this.growIfNoSpace(offset, 8);
+        this.set_buffer(view_F64_u8,offset);
+    }
+    
+    // append big endian methods
+    append_U16BE(val: number){
+        view_U16[0] = val;
+        this.grow(2);
+        BE_writer_2(this.u8,view_U16_u8,this.length-2);
+    }
+    append_U32BE(val: number){
+        view_U32[0] = val;
+        this.grow(4);
+        BE_writer_4(this.u8,view_U32_u8,this.length-4);
+    }
+    append_U64BE(val: bigint){
+        view_U64[0] = val;
+        this.grow(8);
+        BE_writer_8(this.u8,view_U64_u8,this.length-8);
+    }
+    append_I16BE(val: number){
+        view_I16[0] = val;
+        this.grow(2);
+        BE_writer_2(this.u8,view_I16_u8,this.length-2);
+    }
+    append_I32BE(val: number){
+        view_I32[0] = val;
+        this.grow(4);
+        BE_writer_4(this.u8,view_I32_u8,this.length-4);
+    }
+    append_I64BE(val: bigint){
+        view_I64[0] = val;
+        this.grow(8);
+        BE_writer_8(this.u8,view_I64_u8,this.length-8);
+    }
+    append_F32BE(val: number){
+        view_F32[0] = val;
+        this.grow(4);
+        BE_writer_4(this.u8,view_F32_u8,this.length-4);
+    }
+    append_F64BE(val: number){
+        view_F64[0] = val;
+        this.grow(8);
+        BE_writer_8(this.u8,view_F64_u8,this.length-8);
+    }
 
-    append_U8:            (val: number)                 => void;
-       set_U8:            (val: number)                 => void;
+    // set big endian methods
+    set_U16BE(val: number, offset: number){
+        view_U16[0] = val;
+        this.growIfNoSpace(offset, 2);
+        BE_writer_2(this.u8,view_U16_u8,offset);
+    }
+    set_U32BE(val: number, offset: number){
+        view_U32[0] = val;
+        this.growIfNoSpace(offset, 4);
+        BE_writer_4(this.u8,view_U32_u8,offset);
+    }
+    set_U64BE(val: bigint, offset: number){
+        view_U64[0] = val;
+        this.growIfNoSpace(offset, 8);
+        BE_writer_8(this.u8,view_U64_u8,offset);
+    }
+    set_I16BE(val: number, offset: number){
+        view_I16[0] = val;
+        this.growIfNoSpace(offset, 2);
+        BE_writer_2(this.u8,view_I16_u8,offset);
+    }
+    set_I32BE(val: number, offset: number){
+        view_I32[0] = val;
+        this.growIfNoSpace(offset, 4);
+        BE_writer_4(this.u8,view_I32_u8,offset);
+    }
+    set_I64BE(val: bigint, offset: number){
+        view_I64[0] = val;
+        this.growIfNoSpace(offset, 8);
+        BE_writer_8(this.u8,view_I64_u8,offset);
+    }
+    set_F32BE(val: number, offset: number){
+        view_F32[0] = val;
+        this.growIfNoSpace(offset, 4);
+        BE_writer_4(this.u8,view_F32_u8,offset);
+    }
+    set_F64BE(val: number, offset: number){
+        view_F64[0] = val;
+        this.growIfNoSpace(offset, 8);
+        BE_writer_8(this.u8,view_F64_u8,offset);
+    }
 
-    append_U16:           (val: number)                 => void;
-       set_U16:           (val: number, offset: number) => void;
-       set_U16_aligned:   (val: number, offset: number) => void;
-    append_U16BE:         (val: number)                 => void;
-       set_U16BE:         (val: number, offset: number) => void;
-       set_U16BE_aligned: (val: number, offset: number) => void;
-
-    append_U32:           (val: number)                 => void;
-       set_U32:           (val: number, offset: number) => void;
-       set_U32_aligned:   (val: number, offset: number) => void;
-    append_U32BE:         (val: number)                 => void;
-       set_U32BE:         (val: number, offset: number) => void;
-       set_U32BE_aligned: (val: number, offset: number) => void;
-
-    append_U64:           (val: bigint)                 => void;
-       set_U64:           (val: bigint, offset: number) => void;
-       set_U64_aligned:   (val: bigint, offset: number) => void;
-    append_U64BE:         (val: bigint)                 => void;
-       set_U64BE:         (val: bigint, offset: number) => void;
-       set_U64BE_aligned: (val: bigint, offset: number) => void;
-
-
-    append_I8:            (val: number)                 => void;
-       set_I8:            (val: number)                 => void;
-
-    append_I16:           (val: number)                 => void;
-       set_I16:           (val: number, offset: number) => void;
-       set_I16_aligned:   (val: number, offset: number) => void;
-    append_I16BE:         (val: number)                 => void;
-       set_I16BE:         (val: number, offset: number) => void;
-       set_I16BE_aligned: (val: number, offset: number) => void;
-
-    append_I32:           (val: number)                 => void;
-       set_I32:           (val: number, offset: number) => void;
-       set_I32_aligned:   (val: number, offset: number) => void;
-    append_I32BE:         (val: number)                 => void;
-       set_I32BE:         (val: number, offset: number) => void;
-       set_I32BE_aligned: (val: number, offset: number) => void;
-
-    append_I64:           (val: bigint)                 => void;
-       set_I64:           (val: bigint, offset: number) => void;
-       set_I64_aligned:   (val: bigint, offset: number) => void;
-    append_I64BE:         (val: bigint)                 => void;
-       set_I64BE:         (val: bigint, offset: number) => void;
-       set_I64BE_aligned: (val: bigint, offset: number) => void;
-
-
-    append_F32:           (val: number)                 => void;
-       set_F32:           (val: number, offset: number) => void;
-       set_F32_aligned:   (val: number, offset: number) => void;
-    append_F32BE:         (val: number)                 => void;
-       set_F32BE:         (val: number, offset: number) => void;
-       set_F32BE_aligned: (val: number, offset: number) => void;
-
-    append_F64:           (val: number)                 => void;
-       set_F64:           (val: number, offset: number) => void;
-       set_F64_aligned:   (val: number, offset: number) => void;
-    append_F64BE:         (val: number)                 => void;
-       set_F64BE:         (val: number, offset: number) => void;
-       set_F64BE_aligned: (val: number, offset: number) => void;
+    // set aligned big endian methods
+    set_U16BE_aligned(val: number, offset: number){
+        view_U16[0] = val;
+        offset *= 2;
+        this.growIfNoSpace(offset, 2);
+        BE_writer_2(this.u8,view_U16_u8,offset);
+    }
+    set_U32BE_aligned(val: number, offset: number){
+        view_U32[0] = val;
+        offset *= 4;
+        this.growIfNoSpace(offset, 4);
+        BE_writer_4(this.u8,view_U32_u8,offset);
+    }
+    set_U64BE_aligned(val: bigint, offset: number){
+        view_U64[0] = val;
+        offset *= 8;
+        this.growIfNoSpace(offset, 8);
+        BE_writer_8(this.u8,view_U64_u8,offset);
+    }
+    set_I16BE_aligned(val: number, offset: number){
+        view_I16[0] = val;
+        offset *= 2;
+        this.growIfNoSpace(offset, 2);
+        BE_writer_2(this.u8,view_I16_u8,offset);
+    }
+    set_I32BE_aligned(val: number, offset: number){
+        view_I32[0] = val;
+        offset *= 4;
+        this.growIfNoSpace(offset, 4);
+        BE_writer_4(this.u8,view_I32_u8,offset);
+    }
+    set_I64BE_aligned(val: bigint, offset: number){
+        view_I64[0] = val;
+        offset *= 8;
+        this.growIfNoSpace(offset, 8);
+        BE_writer_8(this.u8,view_I64_u8,offset);
+    }
+    set_F32BE_aligned(val: number, offset: number){
+        view_F32[0] = val;
+        offset *= 4;
+        this.growIfNoSpace(offset, 4);
+        BE_writer_4(this.u8,view_F32_u8,offset);
+    }
+    set_F64BE_aligned(val: number, offset: number){
+        view_F64[0] = val;
+        offset *= 8;
+        this.growIfNoSpace(offset, 8);
+        BE_writer_8(this.u8,view_F64_u8,offset);
+    }
 };
-
-const BE_writers = [];
-BE_writers[2] = function(u81: Uint8Array, u82: Uint8Array, offset: number){
-    u81[offset] = u82[1];
-    u81[offset+1] = u82[0];
-};
-
-BE_writers[4] = function(u81: Uint8Array, u82: Uint8Array, offset: number){
-    u81[offset] = u82[3];
-    u81[offset+1] = u82[2];
-    u81[offset+2] = u82[1];
-    u81[offset+3] = u82[0];
-};
-
-BE_writers[8] = function(u81: Uint8Array, u82: Uint8Array, offset: number){
-    u81[offset] = u82[7];
-    u81[offset+1] = u82[6];
-    u81[offset+2] = u82[5];
-    u81[offset+3] = u82[4];
-    u81[offset+4] = u82[3];
-    u81[offset+5] = u82[2];
-    u81[offset+6] = u82[1];
-    u81[offset+7] = u82[0];
-};
-
-for(let [typename,typearr] of [
-    ["U8" ,new Uint8Array(1)],
-    ["U16",new Uint16Array(1)],
-    ["U32",new Uint32Array(1)],
-    ["U64",new BigUint64Array(1)],
-    ["I8" ,new Int8Array(1)],
-    ["I16",new Int16Array(1)],
-    ["I32",new Int32Array(1)],
-    ["I64",new BigInt64Array(1)],
-    ["F32",new Float32Array(1)],
-    ["F64",new Float64Array(1)]] as const){
-    const typesize = typearr.buffer.byteLength;
-    const u8 = new Uint8Array(typearr.buffer);
-    BufferBuilder.prototype["append_"+typename] = function(val: number|bigint){
-        typearr[0] = val;
-        this.grow(typesize);
-        this.u8.set(new Uint8Array(typearr.buffer),this.length-typesize);
-    }
-    BufferBuilder.prototype["set_"+typename] = function(val: number|bigint, offset: number){
-        typearr[0] = val;
-        this.growIfNoSpace(offset,typesize);
-        this.set_buffer(typearr,offset);
-    }
-    if(typesize === 1)continue;
-    BufferBuilder.prototype["set_"+typename+"_aligned"] = function(val: number|bigint, offset: number){
-        typearr[0] = val;
-        offset *= typesize;
-        this.growIfNoSpace(offset,typesize);
-        this.set_buffer(typearr,offset);
-    }
-
-    const BE_writer = BE_writers[typesize];
-    BufferBuilder.prototype["append_"+typename+"BE"] = function(val: number|bigint){
-        const length0 = this.length;
-        typearr[0] = val;
-        this.grow(typesize);
-        BE_writer(this.u8,u8,length0);
-    }
-    BufferBuilder.prototype["set_"+typename+"BE"] = function(val: number|bigint, offset: number){
-        typearr[0] = val;
-        this.growIfNoSpace(offset,typesize);
-        BE_writer(this.u8,u8,offset);
-    }
-    BufferBuilder.prototype["set_"+typename+"BE_aligned"] = function(val: number|bigint, offset: number){
-        typearr[0] = val;
-        offset *= typesize;
-        this.growIfNoSpace(offset,typesize);
-        BE_writer(this.u8,u8,offset);
-    }
-}
-
 
 
