@@ -40,7 +40,7 @@ const BE_writer_8 = function(u81: Uint8Array, u82: Uint8Array, offset: number){
 
 // constants
 const VERBOSE = false;
-// auto generated constants
+// auto generated constants. Souce at src/index.pts
 ##@import globals from autogen_methods
 
 
@@ -143,8 +143,24 @@ export class BufferBuilder{
         }
     }
 
-    // methods are auto generated using build script at index.pts
-    ##@import methods from autogen_methods 
+    // these append/set methods are auto generated using build script at src/index.pts
+    // append little endian methods
+    ##@import append_methods         from autogen_methods
+    
+    // set little endian methods
+    ##@import set_methods            from autogen_methods
+    
+    // set aligned little endian methods
+    ##@import set_aligned_methods    from autogen_methods
+    
+    // append big endian methods
+    ##@import BE_append_methods      from autogen_methods
+
+    // set big endian methods
+    ##@import BE_set_methods         from autogen_methods
+
+    // set aligned big endian methods
+    ##@import BE_set_aligned_methods from autogen_methods
 };
 
 
@@ -162,8 +178,14 @@ const types = [
     ["F32", "Float32Array"  ],
     ["F64", "Float64Array"  ]];
 
-export const methods = new CodeBlock({spacing:2});// default 0
+//export const methods = new CodeBlock({spacing:2});// default 0
 export const globals = new CodeBlock;
+export const append_methods = new CodeBlock;
+export const set_methods = new CodeBlock;
+export const set_aligned_methods = new CodeBlock;
+export const BE_append_methods = new CodeBlock;
+export const BE_set_methods = new CodeBlock;
+export const BE_set_aligned_methods = new CodeBlock;
 
 for(let [name,constructor] of types){
     const itemType = constructor[0] === "B" ? "bigint" : "number";
@@ -171,11 +193,13 @@ for(let [name,constructor] of types){
     
     
     if(typeSize === 1){
-        methods.add(`
+        append_methods.add(`
             append_${name}(val: number){
                 this.grow(1);
                 this.u8[this.length-1] = val;
             }
+        `);
+        set_methods.add(`
             set_${name}(val: number, offset: number){
                 this.growIfNoSpace(offset, ${typeSize});
                 this.u8[offset] = val;
@@ -187,34 +211,43 @@ for(let [name,constructor] of types){
             const view_${name} = new ${constructor}(1);
             const view_${name}_u8 = new Uint8Array(view_${name});
         `);
-        methods.add(`
+        append_methods.add(`
             append_${name}(val: ${itemType}){
                 view_${name}[0] = val;
                 this.grow(${typeSize});
                 this.u8.set(view_${name}_u8,this.length-${typeSize});
             }
+        `);
+        set_methods.add(`
             set_${name}(val: ${itemType}, offset: number){
                 view_${name}[0] = val;
                 this.growIfNoSpace(offset, ${typeSize});
                 this.set_buffer(view_${name}_u8,offset);
             }
+        `);
+        set_aligned_methods.add(`
             set_${name}_aligned(val: ${itemType}, offset: number){
                 view_${name}[0] = val;
                 offset *= ${typeSize};
                 this.growIfNoSpace(offset, ${typeSize});
                 this.set_buffer(view_${name}_u8,offset);
             }
-
+        `);
+        BE_append_methods.add(`
             append_${name}BE(val: ${itemType}){
                 view_${name}[0] = val;
                 this.grow(${typeSize});
                 ${BE_writer}(this.u8,view_${name}_u8,this.length-${typeSize});
             }
+        `);
+        BE_set_methods.add(`
             set_${name}BE(val: ${itemType}, offset: number){
                 view_${name}[0] = val;
                 this.growIfNoSpace(offset, ${typeSize});
                 ${BE_writer}(this.u8,view_${name}_u8,offset);
             }
+        `);
+        BE_set_aligned_methods.add(`
             set_${name}BE_aligned(val: ${itemType}, offset: number){
                 view_${name}[0] = val;
                 offset *= ${typeSize};
