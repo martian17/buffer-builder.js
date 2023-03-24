@@ -5,7 +5,7 @@
   "type": "module",
   "main": "lib/index.js",
   "scripts": {
-    "build": "jsmacro build ./src/index.pts ./src/index.ts && tsc"
+    "build": "jsmacro build ./src/index.macro.ts ./src/index.ts && tsc"
   },
   "keywords": [],
   "author": "",
