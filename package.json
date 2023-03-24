@@ -5,7 +5,7 @@
   "type": "module",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node ./build.js ./src/index.pts ./src/index.ts && tsc"
   },
   "keywords": [],
   "author": "",
