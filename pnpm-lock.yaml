@@ -1,10 +1,12 @@
 lockfileVersion: 5.4
 
 specifiers:
+  js-macro: github:martian17/js-macro
   module-from-string: ^3.3.0
   typescript: ^5.0.2
 
 devDependencies:
+  js-macro: github.com/martian17/js-macro/c6d8227d458765a8cd035482f6ba1c724eb5104d
   module-from-string: 3.3.0
   typescript: 5.0.2
 
@@ -256,4 +258,13 @@ packages:
     resolution: {integrity: sha512-wVORMBGO/FAs/++blGNeAVdbNKtIh1rbBL2EyQ1+J9lClJ93KiiKe8PmFIVdXhHcyv44SL9oglmfeSsndo0jRw==}
     engines: {node: '>=12.20'}
     hasBin: true
+    dev: true
+
+  github.com/martian17/js-macro/c6d8227d458765a8cd035482f6ba1c724eb5104d:
+    resolution: {tarball: https://codeload.github.com/martian17/js-macro/tar.gz/c6d8227d458765a8cd035482f6ba1c724eb5104d}
+    name: js-macro
+    version: 1.0.0
+    hasBin: true
+    dependencies:
+      module-from-string: 3.3.0
     dev: true

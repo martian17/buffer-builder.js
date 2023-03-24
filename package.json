@@ -5,12 +5,13 @@
   "type": "module",
   "main": "lib/index.js",
   "scripts": {
-    "build": "node ./build.js ./src/index.pts ./src/index.ts && tsc"
+    "build": "jsmacro build ./src/index.pts ./src/index.ts && tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "js-macro": "github:martian17/js-macro",
     "module-from-string": "^3.3.0",
     "typescript": "^5.0.2"
   }
