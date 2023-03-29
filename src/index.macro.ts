@@ -128,18 +128,17 @@ export class BufferBuilder{
         this.set_BE64_buffer(buff,this.length);
     }
     export_u8(): Uint8Array {
-        if(VERBOSE)console.log("exported length:",this.length);
-        if(VERBOSE)console.log("background buffer length:",this.u8.length);
-        return this.u8.subarray(0,this.length);
+        return this.u8.subarray(0, this.length);
     }
     export_buffer(): Buffer {
-        return Buffer.from(this.u8,0,this.length);
+        return Buffer.from(this.u8.buffer, this.u8.byteOffset, this.length);
     }
     export(): Uint8Array | Buffer {
-        if(isNode){
-            return Buffer.from(this.u8,0,this.length);
-        }else{
-            return this.u8.subarray(0,this.length);
+        if (isNode) {
+            return this.export_buffer();
+        }
+        else {
+            return this.export_u8();
         }
     }
 
