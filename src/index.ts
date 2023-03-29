@@ -42,21 +42,21 @@ const BE_writer_8 = function(u81: Uint8Array, u82: Uint8Array, offset: number){
 const VERBOSE = false;
 // auto generated constants. Souce at src/index.pts
 const view_U16 = new Uint16Array(1);
-const view_U16_u8 = new Uint8Array(view_U16);
+const view_U16_u8 = new Uint8Array(view_U16.buffer);
 const view_U32 = new Uint32Array(1);
-const view_U32_u8 = new Uint8Array(view_U32);
+const view_U32_u8 = new Uint8Array(view_U32.buffer);
 const view_U64 = new BigUint64Array(1);
-const view_U64_u8 = new Uint8Array(view_U64);
+const view_U64_u8 = new Uint8Array(view_U64.buffer);
 const view_I16 = new Int16Array(1);
-const view_I16_u8 = new Uint8Array(view_I16);
+const view_I16_u8 = new Uint8Array(view_I16.buffer);
 const view_I32 = new Int32Array(1);
-const view_I32_u8 = new Uint8Array(view_I32);
+const view_I32_u8 = new Uint8Array(view_I32.buffer);
 const view_I64 = new BigInt64Array(1);
-const view_I64_u8 = new Uint8Array(view_I64);
+const view_I64_u8 = new Uint8Array(view_I64.buffer);
 const view_F32 = new Float32Array(1);
-const view_F32_u8 = new Uint8Array(view_F32);
+const view_F32_u8 = new Uint8Array(view_F32.buffer);
 const view_F64 = new Float64Array(1);
-const view_F64_u8 = new Uint8Array(view_F64);
+const view_F64_u8 = new Uint8Array(view_F64.buffer);
 
 
 

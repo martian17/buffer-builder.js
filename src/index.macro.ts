@@ -209,7 +209,7 @@ for(let [name,constructor] of types){
         const BE_writer = `BE_writer_${typeSize}`;
         globals.add(`
             const view_${name} = new ${constructor}(1);
-            const view_${name}_u8 = new Uint8Array(view_${name});
+            const view_${name}_u8 = new Uint8Array(view_${name}.buffer);
         `);
         append_methods.add(`
             append_${name}(val: ${itemType}){
